@@ -16,9 +16,8 @@ class Student:
                 lector.grades[course] = [grade]
             x, y = 0, 0
             for item in (lector.grades).values():
-                for i in range(len(item)):
-                    x += item[i]
-                    y += 1
+                x += sum(item)
+                y += len(item)
             lector.average = float(x/y)
         else:
             return 'Ошибка'
@@ -26,8 +25,8 @@ class Student:
     def __str__(self):
         return f'Имя: {self.name}\nФамилия: {self.surname}\n' \
             f'Средняя оценка за домашние задания: {self.average:.2f}\n' \
-            f'Курсы в процессе изучения: {", ".join(x for x in self.courses_in_progress)}\n' \
-            f'Завершенные курсы: {", ".join(x for x in self.finished_courses)}'
+            f'Курсы в процессе изучения: {", ".join(self.courses_in_progress)}\n' \
+            f'Завершенные курсы: {", ".join(self.finished_courses)}\n'
 
     def __add__(self, other):
         return self.average + other.average
@@ -53,7 +52,7 @@ class Mentor:
 
 class Lecturer(Mentor):
     def __str__(self):
-        return f'Имя: {self.name}\nФамилия: {self.surname}\nСредняя оценка за лекции {self.average:.2f}'
+        return f'Имя: {self.name}\nФамилия: {self.surname}\nСредняя оценка за лекции {self.average:.2f}\n'
     def __add__(self, other):
         return self.average + other.average
 
@@ -77,15 +76,32 @@ class Reviewer(Mentor):
                 student.grades[course] = [grade]
             x, y = 0, 0
             for item in (student.grades).values():
-                for i in range(len(item)):
-                    x += item[i]
-                    y += 1
+                x += sum(item)
+                y += len(item)
             student.average = float(x / y)
         else:
             return 'Ошибка'
 
     def __str__(self):
         return f'Имя: {self.name}\nФамилия: {self.surname}'
+
+def calc_std_av(students, courses):
+    x, z = 0, 0
+    for std in students:
+        for crs in courses:
+            x += sum(std.grades[crs])
+            z += len(std.grades[crs])
+    print(f'средняя оценка студентов {", ".join(str(students[p].name) for p in range(len(students)))} '
+          f'по предметам {", ".join(str(courses[m]) for m in range(len(courses)))} = {(x / z):.2f}')
+
+def calc_lector_av(lect, courses):
+    x, z = 0, 0
+    for lct in lect:
+        for crs in courses:
+            x += sum(lct.grades[crs])
+            z += len(lct.grades[crs])
+    print(f'средняя оценка лекторов {", ".join((lect[p].name) for p in range(len(lect)))} '
+          f'по предметам {", ".join(str(courses[m]) for m in range(len(courses)))} = {(x / z):.2f}')
 
 std1 = Student('Ruoy', 'Eman', 'your_gender')
 std1.courses_in_progress += ['Python']
@@ -97,8 +113,6 @@ std2.courses_in_progress += ['Python']
 
 cool_mentor = Mentor('Some', 'Buddy')
 cool_mentor.courses_attached += ['Python']
-
-
 
 lect1 = Lecturer('Fedor', 'Pavlov')
 lect2 = Lecturer('Egor', 'Konstantinov')
@@ -139,27 +153,5 @@ t = lect1 + lect2
 print(std1<std2)
 print(lect1<lect2)
 
-
-def calc_std_av(students, courses):
-    x, z = 0, 0
-    for y in range(len(students)):
-        for i in range(len(courses)):
-            for o in range(len(students[y].grades[courses[i]])):
-                x += students[y].grades[courses[i]][o]
-                z += 1
-    print(f'средняя оценка студентов {", ".join(str(students[p].name) for p in range(len(students)))} '
-          f'по предметам {", ".join(str(courses[m]) for m in range(len(courses)))} = {(x / z):.2f}')
-
-calc_std_av([std1, std2], ["Python"])
-
-def calc_lector_av(lect, courses):
-    x, z = 0, 0
-    for y in range(len(lect)):
-        for i in range(len(courses)):
-            for o in range(len(lect[y].grades[courses[i]])):
-                x += lect[y].grades[courses[i]][o]
-                z += 1
-    print(f'средняя оценка лекторов {", ".join(str(lect[p].name) for p in range(len(lect)))} '
-          f'по предметам {", ".join(str(courses[m]) for m in range(len(courses)))} = {(x / z):.2f}')
-
 calc_lector_av([lect1, lect2], ["Python"])
+calc_std_av([std1, std2], ["Python"])
